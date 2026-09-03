@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="760" height="1040" viewBox="0 0 760 1040">
+  <defs><linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#eee8dc"/><stop offset="1" stop-color="#dce8da"/></linearGradient><filter id="s"><feDropShadow dx="0" dy="18" stdDeviation="22" flood-opacity=".18"/></filter></defs>
+  <rect width="760" height="1040" rx="48" fill="url(#bg)"/>
+  <g filter="url(#s)"><rect x="175" y="76" width="410" height="850" rx="82" fill="#173f38"/><rect x="208" y="160" width="344" height="660" rx="18" fill="#faf7ee"/></g>
+  <text x="380" y="210" text-anchor="middle" font-family="Georgia, serif" font-size="24" letter-spacing="4" fill="#a7783b">AURELIA</text>
+  <text x="235" y="272" font-family="Arial, sans-serif" font-size="15" fill="#1e3933">HydraGlow Botanical Shampoo</text>
+  <text x="235" y="318" font-family="Arial, sans-serif" font-size="14" fill="#314a44">Manufactured by: Aurelia Laboratoires</text>
+  <text x="235" y="339" font-family="Arial, sans-serif" font-size="14" fill="#314a44">18 Rue des Fleurs, Lyon, France</text>
+  <text x="235" y="390" font-family="Arial, sans-serif" font-size="14" fill="#314a44">Imported by: Meridian Consumer Products Pvt. Ltd.</text>
+  <text x="235" y="411" font-family="Arial, sans-serif" font-size="14" fill="#314a44">Plot 21, Industrial Area, Chandigarh 160002</text>
+  <text x="235" y="463" font-family="Arial, sans-serif" font-size="15" fill="#1e3933">Country of Origin: France</text>
+  <text x="235" y="515" font-family="Arial, sans-serif" font-size="15" fill="#1e3933">MFD: 08/2026</text>
+  <text x="235" y="567" font-family="Arial, sans-serif" font-size="15" fill="#1e3933">MRP: ₹299 inclusive of all taxes</text>
+  <text x="235" y="619" font-family="Arial, sans-serif" font-size="15" fill="#1e3933">Unit Sale Price: ₹0.70/ml</text>
+  <text x="235" y="679" font-family="Arial, sans-serif" font-size="15" fill="#1e3933">Consumer Care: +91 98765 43210</text>
+  <rect x="235" y="726" width="120" height="52" fill="#fff" stroke="#173f38" stroke-width="2"/>
+  <path d="M245 736h3v32h-3zm8 0h6v32h-6zm11 0h2v32h-2zm8 0h5v32h-5zm11 0h3v32h-3zm9 0h7v32h-7zm12 0h2v32h-2zm9 0h4v32h-4zm10 0h2v32h-2zm7 0h6v32h-6z" fill="#173f38"/>
+  <text x="380" y="976" text-anchor="middle" font-family="Arial, sans-serif" font-size="17" fill="#526a62">Captured surface · BACK</text>
+</svg>

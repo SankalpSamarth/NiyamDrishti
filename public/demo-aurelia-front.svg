@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="760" height="1040" viewBox="0 0 760 1040">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#f3eee2"/><stop offset="1" stop-color="#d8e5d8"/></linearGradient>
+    <linearGradient id="bottle" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#244e47"/><stop offset="1" stop-color="#0e2927"/></linearGradient>
+    <filter id="shadow"><feDropShadow dx="0" dy="20" stdDeviation="25" flood-opacity=".2"/></filter>
+  </defs>
+  <rect width="760" height="1040" rx="48" fill="url(#bg)"/>
+  <ellipse cx="380" cy="924" rx="205" ry="35" fill="#173f38" opacity=".16"/>
+  <g filter="url(#shadow)">
+    <rect x="283" y="90" width="194" height="90" rx="18" fill="#be8e4a"/>
+    <rect x="246" y="150" width="268" height="760" rx="88" fill="url(#bottle)"/>
+    <rect x="264" y="298" width="232" height="420" rx="22" fill="#fbf7ec"/>
+  </g>
+  <text x="380" y="350" text-anchor="middle" font-family="Georgia, serif" font-size="22" letter-spacing="5" fill="#b07f3e">AURELIA</text>
+  <path d="M380 379c-34 8-57 29-66 62 40-3 62-24 66-62zm7 8c31 11 50 34 54 67-35-7-53-29-54-67z" fill="#799c75"/>
+  <text x="380" y="493" text-anchor="middle" font-family="Georgia, serif" font-size="34" fill="#173f38">HydraGlow</text>
+  <text x="380" y="533" text-anchor="middle" font-family="Arial, sans-serif" font-size="19" letter-spacing="2" fill="#4f675f">BOTANICAL SHAMPOO</text>
+  <line x1="310" y1="566" x2="450" y2="566" stroke="#c49452"/>
+  <text x="380" y="612" text-anchor="middle" font-family="Arial, sans-serif" font-size="16" fill="#607169">ROSEMARY · RICE PROTEIN</text>
+  <text x="380" y="674" text-anchor="middle" font-family="Arial, sans-serif" font-size="18" fill="#173f38">Net Quantity: 500 ml</text>
+  <text x="380" y="976" text-anchor="middle" font-family="Arial, sans-serif" font-size="17" fill="#526a62">Captured surface · FRONT</text>
+</svg>
