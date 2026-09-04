@@ -1,0 +1,63 @@
+import type { ProductSighting } from '../types'
+
+/** Seeded cross-channel sightings for the internal-hackathon demonstration. */
+export const productSightings: ProductSighting[] = [
+  {
+    id: 'DNA-MKT-1042',
+    productName: 'HydraGlow Botanical Shampoo',
+    brand: 'Aurelia',
+    barcode: '8901234567890',
+    source: 'E-commerce listing',
+    channel: 'Marketplace seller · BeautyHub India',
+    location: 'Online · India',
+    observedAt: '2026-09-03',
+    labelVersion: 'Marketplace listing · Sep 2026',
+    rulePack: 'LMPC snapshot · 13 Feb 2026',
+    declarations: {
+      mrp: '₹349',
+      net_quantity: '500 ml',
+      unit_sale_price: '₹0.70/ml',
+      importer: 'Meridian Consumer Products Pvt. Ltd., Plot 21, Industrial Area, Chandigarh 160002',
+    },
+    violationFields: ['consumer_email', 'unit_sale_price'],
+  },
+  {
+    id: 'DNA-CH-23881',
+    productName: 'HydraGlow Botanical Shampoo',
+    brand: 'Aurelia',
+    barcode: '8901234567890',
+    source: 'Physical package',
+    channel: 'Retail shelf · Wellness Mart',
+    location: 'Sector 22, Chandigarh',
+    observedAt: '2026-08-25',
+    labelVersion: 'Retail label · Aug 2026',
+    rulePack: 'LMPC snapshot · 13 Feb 2026',
+    declarations: {
+      mrp: '₹299',
+      net_quantity: '500 ml',
+      unit_sale_price: '₹0.70/ml',
+      importer: 'Meridian Consumer Products Pvt. Ltd., Plot 21, Industrial Area, Chandigarh 160002',
+    },
+    violationFields: ['consumer_email', 'unit_sale_price'],
+  },
+  {
+    id: 'DNA-DL-19014',
+    productName: 'HydraGlow Botanical Shampoo',
+    brand: 'Aurelia',
+    barcode: '8901234567890',
+    source: 'Previous label',
+    channel: 'Distributor stock record',
+    location: 'Okhla warehouse, Delhi',
+    observedAt: '2026-04-12',
+    labelVersion: 'Previous label · Apr 2026',
+    rulePack: 'LMPC snapshot · 13 Feb 2026',
+    declarations: {
+      mrp: '₹279',
+      net_quantity: '500 ml',
+      unit_sale_price: '₹0.56/ml',
+      consumer_email: 'care@aurelia.in',
+      importer: 'Meridian Consumer Products Pvt. Ltd., Plot 21, Industrial Area, Chandigarh 160002',
+    },
+    violationFields: [],
+  },
+]

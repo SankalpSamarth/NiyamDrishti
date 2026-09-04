@@ -2,14 +2,16 @@ import { useEffect, useMemo, useRef, useState } from 'react'
 import {
   AlertTriangle, ArrowLeft, ArrowRight, BarChart3, BookOpen, Box, Camera, Check, CheckCircle2,
   ChevronDown, ClipboardCheck, Clock3, Download, Eye, FileDown, FileText, Filter, Gauge,
-  History, Home, ImagePlus, LayoutDashboard, LoaderCircle, LogOut, MapPin, Menu, Package,
-  PanelLeftClose, Plus, RotateCcw, ScanLine, Search, ShieldCheck, Sparkles, Upload, UserRound,
-  X, XCircle,
+  Fingerprint, GitCompareArrows, Globe2, History, Home, ImagePlus, LayoutDashboard, LoaderCircle,
+  LogOut, MapPin, Menu, Package, PanelLeftClose, Plus, Radio, RotateCcw, ScanLine, Search,
+  ShieldAlert, ShieldCheck, ShoppingCart, Sparkles, Store, Upload, UserRound, X, XCircle,
 } from 'lucide-react'
+import { productSightings } from './data/dna'
 import { demoBlocks, demoDetails, demoText, seedInspections } from './data/seed'
 import { calculateScore, calculateStatus, effectiveStatus, getRuleCatalog, runCompliance } from './lib/compliance'
+import { analyzeComplianceDna } from './lib/complianceDna'
 import { recognizeImage } from './lib/ocr'
-import type { EvidenceImage, Finding, FindingStatus, Inspection, ProductDetails, ViewName } from './types'
+import type { ComplianceDnaResult, EvidenceImage, Finding, FindingStatus, Inspection, ProductDetails, ProductSighting, ViewName } from './types'
 
 const STORAGE_KEY = 'niyamdrishti-inspections-v2'
 const today = new Date().toISOString().slice(0, 10)
@@ -23,6 +25,7 @@ const navItems: Array<{ id: ViewName; label: string; icon: typeof Home }> = [
   { id: 'dashboard', label: 'Home', icon: LayoutDashboard },
   { id: 'new', label: 'Scan a product', icon: ScanLine },
   { id: 'inspections', label: 'Past scans', icon: ClipboardCheck },
+  { id: 'products', label: 'Product DNA', icon: Fingerprint },
   { id: 'rules', label: 'Rules we check', icon: BookOpen },
 ]
 
@@ -136,22 +139,22 @@ function Dashboard({ inspections, openInspection, startInspection, openDemo }: {
   return <>
     <section className="hero-panel simple-hero">
       <div>
-        <span className="section-kicker"><Sparkles size={15} /> SIMPLE POC</span>
-        <h2>Photograph a label. Read its text. Check the declarations.</h2>
-        <p>That is the whole idea. Choose the pre-filled demo for a reliable presentation, or upload a real package photo to test live OCR.</p>
+        <span className="section-kicker"><Fingerprint size={15} /> COMPLIANCE INTELLIGENCE</span>
+        <h2>Scan one package. Discover a market-wide pattern.</h2>
+        <p>Check the label, connect the same SKU across stores and e-commerce, then expose declaration changes and repeated violations.</p>
       </div>
     </section>
 
     <section className="start-choice-grid">
-      <button className="start-choice demo-choice" onClick={openDemo}><div className="choice-icon"><Sparkles size={24} /></div><span className="truth-chip demo">PRE-FILLED · NO OCR</span><h3>See the guided demo</h3><p>Opens a sample shampoo with prepared photos, text and findings. Best for explaining the flow.</p><strong>Open demo <ArrowRight size={17} /></strong></button>
+      <button className="start-choice demo-choice" onClick={openDemo}><div className="choice-icon"><Fingerprint size={24} /></div><span className="truth-chip demo">X-FACTOR DEMO</span><h3>Reveal Compliance DNA</h3><p>Follow one shampoo across a package, marketplace listing and previous label—then expose compliance drift.</p><strong>Open product network <ArrowRight size={17} /></strong></button>
       <button className="start-choice live-choice" onClick={startInspection}><div className="choice-icon"><ScanLine size={24} /></div><span className="truth-chip live">REAL UPLOAD · LIVE OCR</span><h3>Scan your own product</h3><p>Upload label photos, run local OCR, correct the text, then apply the rule checks.</p><strong>Start a scan <ArrowRight size={17} /></strong></button>
     </section>
 
     <section className="panel truth-panel">
       <div className="truth-head"><ShieldCheck size={21} /><div><h3>What is actually working?</h3><p>No mystery AI claims—these are the exact boundaries of this internal-hackathon POC.</p></div></div>
       <div className="truth-grid">
-        <div><span className="truth-chip live">WORKING NOW</span><strong>Image upload, local OCR, editable text, 12 rule checks and reports</strong></div>
-        <div><span className="truth-chip demo">DEMO DATA</span><strong>HydraGlow name, sample photos and evidence boxes are pre-filled</strong></div>
+        <div><span className="truth-chip live">WORKING NOW</span><strong>OCR, 12 rule checks, product matching, compliance drift and reports</strong></div>
+        <div><span className="truth-chip demo">SEEDED NETWORK</span><strong>Three cross-channel HydraGlow sightings make the X-factor reliable on stage</strong></div>
         <div><span className="truth-chip planned">NOT BUILT YET</span><strong>User login, government database, e-commerce crawling and full legal coverage</strong></div>
       </div>
     </section>
@@ -195,8 +198,17 @@ function InspectionsPage({ inspections, openInspection }: { inspections: Inspect
 }
 
 function ProductsPage({ inspections, openInspection }: { inspections: Inspection[]; openInspection: (id: string) => void }) {
+  const featured = inspections.find((item) => item.details.barcode === demoDetails.barcode) ?? inspections[0]
+  const dna = featured ? analyzeComplianceDna(featured, productSightings) : null
   return <>
-    <section className="repo-hero"><div><span className="section-kicker"><Package size={15} /> PRODUCT DNA</span><h2>One product. Every label version.</h2><p>Barcode, visual fingerprint and declarations connect repeat inspections into a verifiable compliance history.</p></div><div className="repo-stat"><strong>{inspections.length}</strong><span>unique demo products</span></div></section>
+    <section className="repo-hero"><div><span className="section-kicker"><Fingerprint size={15} /> PRODUCT DNA</span><h2>One product. Every label version.</h2><p>Barcode, product identity and declarations connect shelf scans, seller listings and previous labels into one compliance history.</p></div><div className="repo-stat"><strong>{dna?.sightings.length ?? 0}</strong><span>linked HydraGlow sightings</span></div></section>
+    {featured && dna && dna.sightings.length > 0 && <button className="dna-cluster-card" onClick={() => openInspection(featured.id)}>
+      <div className="cluster-symbol"><Fingerprint size={27} /></div>
+      <div className="cluster-main"><span className="truth-chip demo">HIGH-RISK CLUSTER</span><h3>{featured.details.name}</h3><p>{dna.fingerprint} · {Math.round(dna.confidence * 100)}% identity confidence</p></div>
+      <div className="cluster-signal"><strong>{dna.repeatedViolations.length}</strong><span>repeated violation patterns</span></div>
+      <div className="cluster-signal"><strong>{dna.affectedLocations}</strong><span>channels / locations</span></div>
+      <span className="cluster-open">Open intelligence <ArrowRight size={17} /></span>
+    </button>}
     <section className="product-grid">{inspections.map((item, index) => <button className="product-card" key={item.id} onClick={() => openInspection(item.id)}><div className={`product-art art-${index % 4}`}><Package size={33} /></div><div className="product-card-body"><div><span>{item.details.category}</span><StatusBadge status={item.status} /></div><h3>{item.details.name}</h3><p>{item.details.brand} · {item.details.origin}</p><hr /><div><span>Last inspected</span><strong>{formatDate(item.details.inspectionDate)}</strong></div><div><span>Compliance score</span><strong>{item.score}/100</strong></div></div></button>)}</section>
   </>
 }
@@ -318,6 +330,7 @@ function InspectionResult({ inspection, onBack, onUpdate }: { inspection: Inspec
   const activeImage = inspection.images.find((image) => image.surface === activeSurface) ?? inspection.images[0]
   const counts = inspection.findings.reduce((acc, item) => { acc[effectiveStatus(item)]++; return acc }, { pass: 0, violation: 0, review: 0 })
   const demoMode = inspection.images.length > 0 && inspection.images.every((image) => image.source === 'demo')
+  const dna = useMemo(() => analyzeComplianceDna(inspection, productSightings), [inspection])
 
   useEffect(() => {
     if (activeFinding?.surface && inspection.images.some((image) => image.surface === activeFinding.surface)) setActiveSurface(activeFinding.surface)
@@ -330,7 +343,8 @@ function InspectionResult({ inspection, onBack, onUpdate }: { inspection: Inspec
 
   const exportEditable = () => {
     const rows = inspection.findings.map((finding) => `<tr><td>${finding.ruleId}</td><td>${finding.title}</td><td>${effectiveStatus(finding)}</td><td>${finding.observed}</td><td>${finding.explanation}</td></tr>`).join('')
-    const html = `<html><body><h1>NiyamDrishti Compliance Report</h1><p>${inspection.id} · ${inspection.details.name}</p><table border="1" cellpadding="8"><tr><th>Rule</th><th>Check</th><th>Decision</th><th>Observed</th><th>Reason</th></tr>${rows}</table><p>Officer-verifiable screening output; not an adjudication.</p></body></html>`
+    const dnaRows = dna.repeatedViolations.map((item) => `<li>${item.label}: ${item.occurrences} linked occurrences (${item.ruleId})</li>`).join('')
+    const html = `<html><body><h1>NiyamDrishti Compliance Report</h1><p>${inspection.id} · ${inspection.details.name}</p><h2>Compliance DNA</h2><p>${dna.fingerprint} · ${dna.sightings.length} linked sightings · ${dna.risk} cluster risk</p><ul>${dnaRows || '<li>No repeated pattern detected</li>'}</ul><h2>Inspection findings</h2><table border="1" cellpadding="8"><tr><th>Rule</th><th>Check</th><th>Decision</th><th>Observed</th><th>Reason</th></tr>${rows}</table><p>Officer-verifiable screening output; not an adjudication.</p></body></html>`
     const link = document.createElement('a'); link.href = URL.createObjectURL(new Blob([html], { type: 'application/msword' })); link.download = `${inspection.id}-report.doc`; link.click(); URL.revokeObjectURL(link.href)
   }
 
@@ -342,6 +356,8 @@ function InspectionResult({ inspection, onBack, onUpdate }: { inspection: Inspec
       <div className="result-identity"><div><StatusBadge status={inspection.status} /><span className="inspection-id mono">{inspection.id}</span></div><h2>{inspection.details.name}</h2><p>{inspection.details.brand} · {inspection.details.category} · {inspection.details.origin}</p><div className="meta-row"><span><MapPin size={15} />{inspection.details.location}</span><span><Clock3 size={15} />{formatDate(inspection.details.inspectionDate)}</span><span><UserRound size={15} />{inspection.inspector}</span></div></div>
       <div className="decision-cards"><div className="decision-card success"><CheckCircle2 size={19} /><div><strong>{counts.pass}</strong><span>Passed</span></div></div><div className="decision-card danger"><XCircle size={19} /><div><strong>{counts.violation}</strong><span>Potential violations</span></div></div><div className="decision-card warning"><AlertTriangle size={19} /><div><strong>{counts.review}</strong><span>Manual reviews</span></div></div></div>
     </section>
+
+    <ComplianceDnaPanel dna={dna} inspection={inspection} />
 
     <div className="result-grid">
       <section className="panel evidence-viewer">
@@ -366,6 +382,61 @@ function InspectionResult({ inspection, onBack, onUpdate }: { inspection: Inspec
     </section>}
     <footer className="report-footer"><ShieldCheck size={17} /><span>NiyamDrishti POC · Decision-support output · Final determination requires authorized officer verification.</span></footer>
   </div>
+}
+
+function sourceIcon(source: ProductSighting['source']) {
+  if (source === 'E-commerce listing') return ShoppingCart
+  if (source === 'Previous label') return History
+  return Store
+}
+
+function ComplianceDnaPanel({ dna, inspection }: { dna: ComplianceDnaResult; inspection: Inspection }) {
+  const [expanded, setExpanded] = useState(false)
+  const uniqueDrifts = dna.drifts.filter((drift, index, all) => all.findIndex((item) => item.field === drift.field && item.observedValue === drift.observedValue) === index)
+
+  if (!dna.sightings.length) {
+    return <section className="dna-panel dna-empty">
+      <div className="dna-mark"><Fingerprint size={24} /></div>
+      <div><span className="eyebrow">COMPLIANCE DNA · {dna.fingerprint}</span><h3>No known product twins yet</h3><p>This scan becomes the first identity record. Future scans can be linked by barcode or product-name similarity.</p></div>
+      <span className="dna-confidence">REPOSITORY READY</span>
+    </section>
+  }
+
+  return <section className={`dna-panel ${expanded ? 'expanded' : ''}`}>
+    <div className="dna-summary">
+      <div className="dna-mark"><Fingerprint size={25} /></div>
+      <div className="dna-heading"><div><span className="truth-chip demo">X-FACTOR · WORKING POC</span><span className="dna-code mono">{dna.fingerprint}</span></div><h2>Product twin found—compliance drift detected</h2><p>The same SKU appears across {dna.sightings.length} other records. NiyamDrishti compared declarations, history and repeated rule failures.</p></div>
+      <div className="dna-quick-stats"><div><strong>{Math.round(dna.confidence * 100)}%</strong><span>identity match</span></div><div><strong>{dna.sightings.length}</strong><span>linked sightings</span></div><div><strong>{uniqueDrifts.length}</strong><span>declaration drifts</span></div></div>
+      <button className="dna-reveal" onClick={() => setExpanded((current) => !current)}>{expanded ? 'Hide network' : 'Reveal product network'} <ArrowRight size={16} /></button>
+    </div>
+
+    {expanded && <div className="dna-details">
+      <div className="dna-network">
+        <div className="dna-section-head"><div><Radio size={17} /><span><strong>Linked product sightings</strong><small>{dna.matchBasis}</small></span></div><span className="network-live"><i /> IDENTITY GRAPH</span></div>
+        <div className="sighting-timeline">
+          <div className="sighting-card current"><div className="sighting-icon"><ScanLine size={17} /></div><div><span>CURRENT INSPECTION</span><strong>{inspection.details.location}</strong><small>{formatDate(inspection.details.inspectionDate)} · Package evidence</small></div><em>Anchor</em></div>
+          {dna.sightings.map((sighting) => {
+            const Icon = sourceIcon(sighting.source)
+            return <div className="sighting-card" key={sighting.id}><div className="sighting-icon"><Icon size={17} /></div><div><span>{sighting.source.toUpperCase()}</span><strong>{sighting.channel}</strong><small>{formatDate(sighting.observedAt)} · {sighting.location}</small></div><em>{Math.round(dna.confidence * 100)}%</em></div>
+          })}
+        </div>
+      </div>
+
+      <div className="dna-drift-board">
+        <div className="dna-section-head"><div><GitCompareArrows size={17} /><span><strong>Declaration drift</strong><small>What changed across matching records</small></span></div><span className={`cluster-risk ${dna.risk.toLowerCase()}`}>{dna.risk} cluster risk</span></div>
+        <div className="drift-list">{uniqueDrifts.slice(0, 4).map((drift) => <div className="drift-row" key={`${drift.field}-${drift.observedValue}`}>
+          <div><span>{drift.label}</span><small>{drift.source}</small></div><strong>{drift.currentValue}</strong><ArrowRight size={14} /><strong>{drift.observedValue}</strong><span className={`severity ${drift.severity}`}>{drift.severity}</span>
+        </div>)}</div>
+      </div>
+
+      <div className="dna-enforcement">
+        <div className="enforcement-icon"><ShieldAlert size={21} /></div>
+        <div className="enforcement-copy"><span className="eyebrow">ENFORCEMENT SIGNAL</span><h3>{dna.repeatedViolations.length} repeated violation patterns across {dna.affectedLocations} locations</h3><p>{dna.recommendation}</p></div>
+        <div className="repeat-list">{dna.repeatedViolations.map((item) => <div key={item.field}><strong>{item.occurrences}×</strong><span>{item.label}<small>{item.ruleId}</small></span></div>)}</div>
+      </div>
+      <div className="dna-disclaimer"><Globe2 size={14} /><span>Cross-channel sightings are seeded demonstration records for the internal POC. Matching and comparison logic is live; national data integration is the scale-up path.</span></div>
+    </div>}
+  </section>
 }
 
 export default App

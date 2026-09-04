@@ -1,6 +1,6 @@
 # NiyamDrishti POC
 
-An evidence-first compliance copilot for screening packaged commodities under the Legal Metrology (Packaged Commodities) Rules, 2011.
+An evidence-first compliance intelligence system for screening packaged commodities under the Legal Metrology (Packaged Commodities) Rules, 2011.
 
 This repository contains the internal-hackathon vertical slice. It is designed to demonstrate a complete officer workflow without claiming production-grade statutory adjudication.
 
@@ -17,6 +17,9 @@ Do not open `index.html` directly. This is a React/TypeScript application and mu
 - Multi-surface image upload with an offline English OCR engine
 - Editable OCR text for human correction
 - Twelve deterministic, explainable compliance checks
+- Compliance DNA fingerprinting using barcode or product-identity similarity
+- Cross-channel comparison of package, e-commerce and historical declarations
+- Compliance-drift and repeated-violation detection across linked sightings
 - Imported-product and package-type applicability logic
 - Approximate calibrated font-height screening with a manual-review fallback
 - Image-linked evidence overlays for the seeded demonstration
@@ -45,13 +48,13 @@ npm run preview
 
 ## Reliable demo path
 
-1. Open **New inspection**.
-2. Select **Load demo evidence**.
-3. Review the extracted declarations.
-4. Select **Analyze 12 compliance checks**.
-5. Select a failed finding to jump to its evidence.
-6. Change the officer verification decision and observe the score update.
-7. Export an editable report or use **Print / save PDF**.
+1. On **Home**, select **Reveal Compliance DNA**.
+2. Review the individual inspection and select **Reveal product network**.
+3. Show the same barcode linked across a retail package, marketplace listing and previous label.
+4. Explain the MRP, unit-price and consumer-email drift.
+5. Point to the repeated-violation enforcement signal.
+6. Select a failed finding to jump to its image evidence.
+7. Change the officer verification decision or export the combined report.
 
 The included Aurelia shampoo case demonstrates:
 
@@ -60,6 +63,9 @@ The included Aurelia shampoo case demonstrates:
 - Incorrect unit-sale-price calculation
 - Estimated character height below the POC threshold
 - Evidence overlays and human verification
+- A 98% exact-barcode identity match across three seeded sightings
+- Cross-channel MRP drift and historical label comparison
+- Repeat detection for missing consumer email and incorrect unit price
 
 ## Architecture
 
@@ -74,7 +80,9 @@ React capture and enforcement UI
               │
  Evidence findings + officer override
               │
- Local repository + report generation
+ Compliance DNA + declaration diff engine
+              │
+ Product network + enforcement report
 ```
 
 The OCR boundary is isolated in `src/lib/ocr.ts`, so PaddleOCR or a government-hosted vision service can replace it after selection. The compliance logic lives in `src/lib/compliance.ts`; it intentionally does not rely on an LLM for pass/fail decisions.
@@ -92,14 +100,14 @@ npm test
 npm run build
 ```
 
-The current tests cover complete imported packages, missing declarations, domestic/imported applicability, uncalibrated font review, and common OCR currency-symbol substitutions.
+The current tests cover complete imported packages, missing declarations, domestic/imported applicability, uncalibrated font review, common OCR currency-symbol substitutions, product identity matching, declaration extraction, cross-channel drift and repeat-violation detection.
 
 ## POC boundaries
 
 - Authentication and roles are represented in the UI but are not backed by an identity provider.
 - Font height is a screening estimate. Prescribed physical measurement remains an officer task.
 - The included rules are a demonstrative subset and require validation by an authorized Legal Metrology expert before operational use.
-- E-commerce reconciliation, government registry synchronization, automated gazette ingestion, and cloud collaboration are planned extensions.
+- Product matching and e-commerce comparison run against seeded POC sightings; marketplace crawling, government registry synchronization, automated gazette ingestion and cloud collaboration are planned extensions.
 - Browser local storage is used for created inspections; PostgreSQL and object storage are the intended production targets.
 
 ## Source references

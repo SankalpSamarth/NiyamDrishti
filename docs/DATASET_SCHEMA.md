@@ -24,6 +24,20 @@ Keep development and evaluation products separate. Multiple surfaces of the same
 | `expected_status` | `Potential violation` |
 | `ground_truth_notes` | `Email missing; unit price incorrect` |
 
+## Cross-channel sighting fields
+
+| Field | Example |
+| --- | --- |
+| `sighting_id` | `DNA-MKT-1042` |
+| `product_id` | `PROD-001` |
+| `source` | `E-commerce listing` |
+| `channel` | `Marketplace seller` |
+| `location` | `Online · India` |
+| `observed_at` | `2026-09-03` |
+| `label_version` | `Marketplace listing · Sep 2026` |
+| `rule_pack` | `LMPC snapshot · 13 Feb 2026` |
+| `declaration_snapshot` | `{ "mrp": "₹349", "net_quantity": "500 ml" }` |
+
 ## Image-level fields
 
 | Field | Example |

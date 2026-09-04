@@ -73,4 +73,51 @@ export interface Inspection {
   source: 'seed' | 'created'
 }
 
+export type DeclarationKey = 'mrp' | 'net_quantity' | 'unit_sale_price' | 'consumer_email' | 'importer'
+
+export interface ProductSighting {
+  id: string
+  productName: string
+  brand: string
+  barcode: string
+  source: 'Physical package' | 'E-commerce listing' | 'Previous label'
+  channel: string
+  location: string
+  observedAt: string
+  labelVersion: string
+  rulePack: string
+  declarations: Partial<Record<DeclarationKey, string>>
+  violationFields: string[]
+}
+
+export interface DeclarationDrift {
+  field: DeclarationKey
+  label: string
+  currentValue: string
+  observedValue: string
+  sightingId: string
+  source: ProductSighting['source']
+  severity: 'critical' | 'major' | 'info'
+  explanation: string
+}
+
+export interface RepeatedViolation {
+  field: string
+  label: string
+  ruleId: string
+  occurrences: number
+}
+
+export interface ComplianceDnaResult {
+  fingerprint: string
+  confidence: number
+  matchBasis: string
+  sightings: ProductSighting[]
+  drifts: DeclarationDrift[]
+  repeatedViolations: RepeatedViolation[]
+  affectedLocations: number
+  risk: 'Low' | 'Medium' | 'High'
+  recommendation: string
+}
+
 export type ViewName = 'dashboard' | 'new' | 'inspections' | 'products' | 'rules' | 'result'

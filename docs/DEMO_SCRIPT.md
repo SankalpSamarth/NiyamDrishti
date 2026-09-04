@@ -4,21 +4,34 @@
 
 Hold up a packaged product and ask whether it is compliant. Explain that missing declarations, incorrect prices, unreadable text, incomplete photographs, exemptions, and changing rules make manual screening difficult.
 
-## 0:35–1:15 — Command centre
+## 0:35–1:00 — The baseline
 
-Show inspection activity, outcome distribution and recent inspections. Emphasize that this is an enforcement workflow, not a consumer OCR toy.
+Explain that OCR, rule checks and reports are necessary but not the innovation. The enforcement problem is that each inspection normally remains isolated.
 
-## 1:15–1:55 — Scope and capture
+## 1:00–2:10 — X-factor: Compliance DNA
 
-Open **New inspection** and explain that applicability comes before compliance. Use **Load demo evidence** to keep the live walkthrough reliable.
+From **Home**, select **Reveal Compliance DNA**, then **Reveal product network**.
 
-## 1:55–2:35 — Extraction
+Say:
 
-Show the multi-surface evidence and editable OCR output. State that pretrained OCR is used for acquisition while deterministic code makes compliance decisions.
+> NiyamDrishti does not forget a product after one inspection. Barcode and product identity connect every version of the same SKU across shelf scans, seller listings and time.
 
-## 2:35–3:45 — Explainable findings
+Point to:
 
-Run the analysis. Select:
+1. The current Chandigarh inspection
+2. The marketplace listing
+3. The second retail sighting
+4. The previous Delhi label
+
+## 2:10–2:55 — Compliance drift
+
+Show that the same SKU carries a different marketplace MRP, an older price and unit-price declaration, and a consumer email that disappeared from the current label.
+
+Then show the enforcement signal: two violation patterns recur three times across four locations/channels.
+
+## 2:55–3:50 — Evidence-first findings
+
+Select:
 
 1. Missing consumer email
 2. Incorrect unit sale price
@@ -26,14 +39,14 @@ Run the analysis. Select:
 
 For each finding, point out the observed evidence, requirement, provision, confidence and visual location.
 
-## 3:45–4:20 — Human authority
+## 3:50–4:20 — Human authority
 
 Override one suggestion using **Officer verification**. The score and outcome update immediately while the change remains attributable to the officer.
 
-## 4:20–4:45 — Repository and report
+## 4:20–4:45 — Live-versus-seeded truth
 
-Show product history and export the report. Mention future barcode-based label-version comparison and repeat-violation intelligence.
+State clearly that the cross-channel records are seeded so the presentation is reliable, while identity matching, declaration comparison and risk aggregation are executing live. A real upload and offline OCR path is also available.
 
 ## 4:45–5:00 — Close
 
-> We are not replacing inspectors. We give every inspector the speed of AI, the consistency of executable rules, and the defensibility of traceable evidence.
+> Existing tools ask whether one label is compliant. NiyamDrishti asks where else the same product exists, what changed, and whether the violation is spreading. We turn isolated inspections into enforcement intelligence.
