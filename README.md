@@ -48,6 +48,8 @@ npm run preview
 
 ## Reliable demo path
 
+For the complete speaking script, team roles, judge questions and fallback plan, read [the team demo playbook](docs/TEAM_DEMO_PLAYBOOK.md).
+
 1. On **Home**, select **Reveal Compliance DNA**.
 2. Review the individual inspection and select **Reveal product network**.
 3. Show the same barcode linked across a retail package, marketplace listing and previous label.
