@@ -45,7 +45,7 @@ function createDemoInspection(): Inspection {
   return {
     id: 'ND-CH-24092',
     details: demoDetails,
-    inspector: 'Aarav Mehta · Inspector',
+    inspector: 'Sankalp Samarth · Inspector',
     createdAt: '2026-09-02T09:42:00.000Z',
     status: calculateStatus(findings),
     score: calculateScore(findings),
@@ -74,7 +74,7 @@ export const seedInspections: Inspection[] = [
   },
   {
     id: 'ND-CH-24073', details: baseDetails('65W GaN Travel Adapter', 'VoltEdge', 'Electronics', 'Imported', '2026-08-27'),
-    inspector: 'Aarav Mehta · Inspector', createdAt: '2026-08-27T15:31:00.000Z', status: 'Needs review', score: 84,
+    inspector: 'Sankalp Samarth · Inspector', createdAt: '2026-08-27T15:31:00.000Z', status: 'Needs review', score: 84,
     findings: [], images: [], ocrText: '', ocrBlocks: [], source: 'seed',
   },
   {

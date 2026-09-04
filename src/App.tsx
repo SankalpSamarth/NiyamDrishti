@@ -107,7 +107,7 @@ function App() {
           <button onClick={() => setView('rules')}>See sources and limits <ArrowRight size={14} /></button>
         </div>
         <div className="profile-row">
-          <div className="avatar">AM</div><div><strong>Aarav Mehta</strong><span>Inspector · CH-04</span></div><LogOut size={17} />
+          <div className="avatar">SS</div><div><strong>Sankalp Samarth</strong><span>Inspector · dotcom</span></div><LogOut size={17} />
         </div>
       </aside>
       {sidebarOpen && <button className="sidebar-scrim" onClick={() => setSidebarOpen(false)} aria-label="Close navigation" />}
@@ -278,7 +278,7 @@ function NewInspection({ onSave, onCancel }: { onSave: (inspection: Inspection) 
     const findings = runCompliance(details, text, blocks)
     const inspection: Inspection = {
       id: `ND-CH-${String(Math.floor(24100 + Math.random() * 800))}`,
-      details, inspector: 'Aarav Mehta · Inspector', createdAt: new Date().toISOString(), findings,
+      details, inspector: 'Sankalp Samarth · Inspector', createdAt: new Date().toISOString(), findings,
       score: calculateScore(findings), status: calculateStatus(findings), images, ocrText: text, ocrBlocks: blocks, source: 'created',
     }
     onSave(inspection)
