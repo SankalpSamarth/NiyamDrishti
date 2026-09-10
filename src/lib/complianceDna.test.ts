@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest'
 import { productSightings } from '../data/dna'
 import { demoDetails, demoText } from '../data/seed'
 import { runCompliance } from './compliance'
-import { analyzeComplianceDna, extractDeclarations } from './complianceDna'
+import { analyzeComplianceDna, buildDnaRepository, extractDeclarations } from './complianceDna'
 import type { Inspection } from '../types'
 
 const inspection: Inspection = {
@@ -20,6 +20,30 @@ const inspection: Inspection = {
 }
 
 describe('Compliance DNA', () => {
+  it('links a new saved inspection and excludes itself', () => {
+    const previous = { ...inspection, id: 'previous', source: 'created' as const, ocrText: demoText.replace('₹299', '₹349') }
+    const repo = buildDnaRepository([inspection, previous], [], inspection.id)
+    expect(repo).toHaveLength(1)
+    expect(repo[0].provenance).toBe('local')
+    expect(analyzeComplianceDna(inspection, repo).drifts.some((item) => item.field === 'mrp')).toBe(true)
+  })
+
+  it('does not merge two known conflicting barcodes even when product names match', () => {
+    const other = { ...productSightings[0], barcode: '9999999999999', productName: demoDetails.name, brand: demoDetails.brand }
+    expect(analyzeComplianceDna(inspection, [other]).sightings).toHaveLength(0)
+  })
+
+  it('does not flag equivalent currency formatting or quantity units as drift', () => {
+    const equivalent = { ...productSightings[0], declarations: { ...extractDeclarations(demoText), mrp: 'Rs. 299.00', net_quantity: '0.5 l', unit_sale_price: 'Rs. 0.70/ml' } }
+    expect(analyzeComplianceDna(inspection, [equivalent]).drifts).toHaveLength(0)
+  })
+
+  it('uses officer decisions when counting repeat flags in saved records', () => {
+    const verified = { ...inspection, id: 'verified', source: 'created' as const, findings: inspection.findings.map((finding) => ({ ...finding, officerDecision: 'pass' as const })) }
+    const repo = buildDnaRepository([verified], [], inspection.id)
+    expect(repo[0].violationFields).toHaveLength(0)
+    expect(analyzeComplianceDna(inspection, repo).repeatedViolations).toHaveLength(0)
+  })
   it('extracts comparable declarations from OCR text', () => {
     expect(extractDeclarations(demoText)).toMatchObject({
       mrp: '₹299',

@@ -46,16 +46,45 @@ export function extractDeclarations(text: string): Partial<Record<DeclarationKey
 
 function matchesInspection(inspection: Inspection, sighting: ProductSighting) {
   const currentBarcode = inspection.details.barcode.trim()
-  if (currentBarcode && currentBarcode === sighting.barcode) return { matches: true, score: 0.98, basis: 'Exact barcode + brand identity' }
+  if (currentBarcode && sighting.barcode.trim()) return { matches: currentBarcode === sighting.barcode.trim(), score: currentBarcode === sighting.barcode.trim() ? 0.98 : 0, basis: 'Exact barcode (identity heuristic)' }
 
   const nameScore = tokenSimilarity(inspection.details.name, sighting.productName)
   const brandMatch = normalize(inspection.details.brand) === normalize(sighting.brand)
   const score = nameScore * 0.72 + (brandMatch ? 0.22 : 0)
-  return { matches: score >= 0.62, score, basis: 'Brand + product-name similarity' }
+  return { matches: brandMatch && score >= 0.62, score, basis: 'Brand + product-name similarity (candidate match)' }
 }
 
-function normalizeDeclaration(value?: string) {
-  return normalize(value ?? '').replace(/rs/g, '').replace(/inr/g, '')
+export function buildDnaRepository(inspections: Inspection[], samples: ProductSighting[], currentId: string): ProductSighting[] {
+  return [
+    ...samples.map((sample) => ({ ...sample, provenance: 'sample' as const })),
+    ...inspections.filter((record) => record.id !== currentId && record.source === 'created').map((record): ProductSighting => ({
+      id: record.id, productName: record.details.name, brand: record.details.brand,
+      barcode: record.details.barcode, source: record.details.channel === 'E-commerce' ? 'E-commerce listing' : 'Physical package',
+      channel: record.details.channel, location: record.details.location, observedAt: record.details.inspectionDate,
+      labelVersion: record.id, rulePack: 'LMPC POC / 12-check subset',
+      declarations: extractDeclarations(record.ocrText),
+      violationFields: record.findings.filter((finding) => effectiveStatus(finding) === 'violation').map((finding) => finding.field),
+      provenance: record.images.length > 0 && record.images.every((image) => image.source !== 'upload') ? 'sample' : 'local',
+    })),
+  ]
+}
+
+function normalizeDeclaration(value: string | undefined, field: DeclarationKey) {
+  if (!value) return ''
+  if (field === 'mrp') return String(Number(value.replace(/,/g, '').match(/\d+(?:\.\d+)?/)?.[0]))
+  if (field === 'net_quantity') {
+    const match = value.match(/(\d+(?:\.\d+)?)\s*(kg|g|mg|ml|l)\b/i)
+    if (match) {
+      const factors: Record<string, number> = { kg: 1000, g: 1, mg: .001, l: 1000, ml: 1 }
+      const unit = match[2].toLowerCase()
+      return `${Number(match[1]) * factors[unit]}:${['kg', 'g', 'mg'].includes(unit) ? 'mass' : 'volume'}`
+    }
+  }
+  if (field === 'unit_sale_price') {
+    const match = value.match(/(\d+(?:\.\d+)?)\s*\/\s*(\w+)/)
+    if (match) return `${Number(match[1])}/${match[2].toLowerCase()}`
+  }
+  return normalize(value)
 }
 
 function buildDrifts(current: Partial<Record<DeclarationKey, string>>, sightings: ProductSighting[]) {
@@ -66,7 +95,7 @@ function buildDrifts(current: Partial<Record<DeclarationKey, string>>, sightings
       const currentValue = current[key]
       const observedValue = sighting.declarations[key]
       if (!currentValue && !observedValue) continue
-      if (normalizeDeclaration(currentValue) === normalizeDeclaration(observedValue)) continue
+      if (normalizeDeclaration(currentValue, key) === normalizeDeclaration(observedValue, key)) continue
 
       const missing = !currentValue || !observedValue
       const severity = key === 'mrp' ? 'critical' : key === 'consumer_email' || key === 'unit_sale_price' ? 'major' : 'info'
@@ -111,7 +140,7 @@ function buildRepeatedViolations(inspection: Inspection, sightings: ProductSight
 }
 
 function fingerprintFor(inspection: Inspection) {
-  const source = inspection.details.barcode || `${inspection.details.brand}-${inspection.details.name}`
+  const source = inspection.details.barcode.trim() || normalize(`${inspection.details.brand}-${inspection.details.name}`)
   let hash = 0
   for (const character of source) hash = ((hash << 5) - hash + character.charCodeAt(0)) | 0
   const code = Math.abs(hash).toString(16).toUpperCase().padStart(8, '0')
@@ -124,7 +153,7 @@ export function analyzeComplianceDna(inspection: Inspection, repository: Product
     .filter(({ match }) => match.matches)
     .sort((a, b) => b.match.score - a.match.score)
 
-  const sightings = matches.map(({ sighting }) => sighting)
+  const sightings = matches.map(({ sighting, match }) => ({ ...sighting, matchScore: match.score }))
   const current = extractDeclarations(inspection.ocrText)
   const drifts = buildDrifts(current, sightings)
   const repeatedViolations = buildRepeatedViolations(inspection, sightings)

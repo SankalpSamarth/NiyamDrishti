@@ -9,6 +9,8 @@ export interface OCRResult {
 export async function recognizeImage(dataUrl: string, surface: string, onProgress?: (progress: number) => void): Promise<OCRResult> {
   const { createWorker } = await import('tesseract.js')
   const worker = await createWorker('eng', 1, {
+    workerPath: `${window.location.origin}/ocr-runtime/worker.min.js`,
+    corePath: `${window.location.origin}/ocr-runtime`,
     langPath: `${window.location.origin}/tessdata`,
     logger: (message) => {
       if (message.status === 'recognizing text' && typeof message.progress === 'number') onProgress?.(message.progress)
@@ -22,7 +24,7 @@ export async function recognizeImage(dataUrl: string, surface: string, onProgres
       image.onerror = reject
       image.src = dataUrl
     })
-    const result = await worker.recognize(dataUrl)
+    const result = await worker.recognize(dataUrl, {}, { blocks: true, text: true })
     const blocks: OCRBlock[] = []
     const page = result.data as typeof result.data & {
       blocks?: Array<{ paragraphs?: Array<{ lines?: Array<{ text: string; confidence: number; bbox: { x0: number; y0: number; x1: number; y1: number } }> }> }>

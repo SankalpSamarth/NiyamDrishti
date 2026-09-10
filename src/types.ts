@@ -22,7 +22,7 @@ export interface EvidenceImage {
   surface: string
   name: string
   dataUrl: string
-  source: 'upload' | 'demo'
+  source: 'upload' | 'demo' | 'test'
 }
 
 export interface Finding {
@@ -35,7 +35,7 @@ export interface Finding {
   observed: string
   requirement: string
   explanation: string
-  confidence: number
+  confidence?: number
   surface?: string
   box?: BoundingBox
   citation: string
@@ -71,6 +71,7 @@ export interface Inspection {
   ocrText: string
   ocrBlocks: OCRBlock[]
   source: 'seed' | 'created'
+  audit?: Array<{ at: string; ruleId: string; before: FindingStatus; after: FindingStatus; actor: string }>
 }
 
 export type DeclarationKey = 'mrp' | 'net_quantity' | 'unit_sale_price' | 'consumer_email' | 'importer'
@@ -88,6 +89,8 @@ export interface ProductSighting {
   rulePack: string
   declarations: Partial<Record<DeclarationKey, string>>
   violationFields: string[]
+  provenance?: 'sample' | 'local'
+  matchScore?: number
 }
 
 export interface DeclarationDrift {

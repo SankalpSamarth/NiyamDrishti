@@ -22,10 +22,10 @@ const present = (input: RuleInput, expression: RegExp, observed: string): Omit<F
   const block = input.blocks.find((item) => expression.test(item.text))
   expression.lastIndex = 0
   return {
-    status: match ? 'pass' : 'violation',
+    status: match ? (block && block.confidence < 65 ? 'review' : 'pass') : 'violation',
     observed: match?.[0]?.trim() || observed,
-    explanation: match ? 'Required declaration was detected in the captured evidence.' : 'The declaration was not detected across the captured package surfaces.',
-    confidence: match ? Math.max(0.82, (block?.confidence ?? 86) / 100) : 0.86,
+    explanation: match ? (block && block.confidence < 65 ? 'OCR confidence is low for this declaration. Verify the source photograph before deciding.' : 'A declaration text pattern was detected. Confirm its correctness and completeness against the photograph.') : 'The declaration was not detected in the supplied text. Inspect all package surfaces and check for OCR omissions before confirming a violation.',
+    confidence: block ? Math.max(0, Math.min(1, block.confidence / 100)) : undefined,
     surface: block?.surface,
     box: block?.box,
   }
@@ -35,13 +35,13 @@ const rules: RuleDefinition[] = [
   {
     id: 'LMPC-6(1)(a)', title: 'Manufacturer / packer identity', field: 'manufacturer', severity: 'critical',
     requirement: 'Name and address of the manufacturer or packer must be declared.', citation: 'Rule 6(1)(a)',
-    evaluate: (input) => present(input, /(manufactured|packed|marketed)\s+by[:\s][^\n]{4,}/i, 'Not detected'),
+    evaluate: (input) => present(input, /(manufactured|packed|marketed)\s+by\s*:?\s*[^\n]{4,}/i, 'Not detected'),
   },
   {
     id: 'LMPC-6(1)(a)-IMP', title: 'Importer identity', field: 'importer', severity: 'critical',
     requirement: 'Imported retail packages must declare the importer name and address.', citation: 'Rule 6(1)(a)',
     applicable: ({ details }) => details.origin === 'Imported',
-    evaluate: (input) => present(input, /imported\s+by[:\s][^\n]{4,}/i, 'Not detected'),
+    evaluate: (input) => present(input, /imported\s+by\s*:?\s*[^\n]{4,}/i, 'Not detected'),
   },
   {
     id: 'LMPC-6(1)(aa)', title: 'Country of origin', field: 'country_of_origin', severity: 'major',
@@ -126,7 +126,7 @@ const rules: RuleDefinition[] = [
       if (!details.calibrationDetected || !details.estimatedFontMm || !details.principalDisplayAreaCm2) {
         return {
           status: 'review', observed: 'Panel area or calibrated character measurement not supplied',
-          explanation: 'Rule 7 cannot be checked from pixels alone. Supply principal display panel area and a scale-assisted character height, otherwise an officer must measure it.', confidence: 0.98,
+          explanation: 'Rule 7 cannot be checked from pixels alone. Supply principal display panel area and a scale-assisted character height, otherwise an officer must measure it.',
         }
       }
       const area = details.principalDisplayAreaCm2
@@ -139,7 +139,6 @@ const rules: RuleDefinition[] = [
         explanation: pass
           ? `The estimate meets the ${threshold.toFixed(1)} mm Table I threshold for a ${area} cm² panel (${details.moldedDeclaration ? 'moulded' : 'printed'} declaration).`
           : `The estimate is below the ${threshold.toFixed(1)} mm Table I threshold for a ${area} cm² panel (${details.moldedDeclaration ? 'moulded' : 'printed'} declaration). Officer measurement is still required.`,
-        confidence: 0.89,
       }
     },
   },

@@ -29,6 +29,16 @@ describe('versioned compliance checks', () => {
     expect(calculateScore(findings)).toBe(100)
   })
 
+  it('accepts OCR that places manufacturer and importer details on the next line', () => {
+    const multilineText = compliantText
+      .replace('Manufactured by: Demo Labs, New Delhi 110001', 'Manufactured by:\nDemo Labs, New Delhi 110001')
+      .replace('Imported by: Demo Imports Pvt Ltd, Mumbai 400001', 'Imported by:\nDemo Imports Pvt Ltd, Mumbai 400001')
+    const findings = runCompliance(details, multilineText)
+
+    expect(findings.find((finding) => finding.field === 'manufacturer')?.status).toBe('pass')
+    expect(findings.find((finding) => finding.field === 'importer')?.status).toBe('pass')
+  })
+
   it('flags missing importer, country of origin, email and low character height', () => {
     const findings = runCompliance({ ...details, estimatedFontMm: 1.4 }, compliantText
       .replace(/Imported by:.+\n/, '')

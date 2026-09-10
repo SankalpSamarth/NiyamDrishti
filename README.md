@@ -4,6 +4,22 @@ An evidence-first compliance intelligence system for screening packaged commodit
 
 This repository contains the internal-hackathon vertical slice. It is designed to demonstrate a complete officer workflow without claiming production-grade statutory adjudication.
 
+## Round two update — 10 September 2026
+
+Next round: **30 September 2026**. The current SIH slide template stays in use.
+
+[Open the live app](https://niyamdrishti.vercel.app) · [Download the latest SIH presentation](outputs/SIH2026_dotcom_Round2_September30_Ready.pptx)
+
+- A focused home screen, larger readable type, responsive layouts and a queue based on saved inspections.
+- Live Compliance DNA comparisons between saved scans, with explicit sample provenance, conflicting-barcode rejection, and equivalent price/quantity normalization.
+- Correction Lab: edit proposed declarations and compare rule outcomes without changing original evidence or officer decisions.
+- IndexedDB stores photos, OCR boxes, findings and local officer activity across reloads. Data stays in this browser profile and origin; clearing site data removes it. Previous compact records cannot recover previously discarded images.
+- An imported-product warning stops a Domestic scan from skipping importer checks when the text says “Imported by”.
+- Real OCR line boxes, actual OCR confidence and low-confidence manual review. Edited text drops stale OCR overlays.
+- A generated Nova Bite test-label shortcut runs actual OCR without relying on the pre-filled sample.
+
+Read [the round two plan and demo](docs/ROUND_TWO.md) for the rehearsal sequence, current scope and remaining milestones.
+
 ## Fastest way to open it on macOS
 
 Double-click **Start NiyamDrishti.command** in Finder. Keep the Terminal window open while using the application.
@@ -50,7 +66,7 @@ npm run preview
 
 For the complete speaking script, team roles, judge questions and fallback plan, read [the team demo playbook](docs/TEAM_DEMO_PLAYBOOK.md).
 
-1. On **Home**, select **Reveal Compliance DNA**.
+1. On **Home**, select **Explore the guided demo**.
 2. Review the individual inspection and select **Reveal product network**.
 3. Show the same barcode linked across a retail package, marketplace listing and previous label.
 4. Explain the MRP, unit-price and consumer-email drift.
@@ -93,6 +109,8 @@ The OCR boundary is isolated in `src/lib/ocr.ts`, so PaddleOCR or a government-h
 
 English Tesseract language weights are vendored in `public/tessdata`. The application does not need to retrieve model weights from a CDN during the demo.
 
+`predev` and `prebuild` copy the installed Tesseract worker and both LSTM recognition cores into `public/ocr-runtime`. The OCR adapter loads these local assets rather than a third-party CDN. This directory is generated and ignored by Git. A full offline PWA cache is not implemented; keep the local server running for offline rehearsals.
+
 Hindi and additional Indian-language OCR are a post-selection task. PaddleOCR's Devanagari recognizer is the intended next adapter.
 
 ## Validation
@@ -102,15 +120,15 @@ npm test
 npm run build
 ```
 
-The current tests cover complete imported packages, missing declarations, domestic/imported applicability, uncalibrated font review, common OCR currency-symbol substitutions, product identity matching, declaration extraction, cross-channel drift and repeat-violation detection.
+The current 20 automated tests cover complete imported packages, missing declarations, domestic/imported applicability, uncalibrated font review, currency substitutions, saved-record DNA matching, conflicting barcodes, equivalent declarations, repeat flags after officer overrides, low OCR confidence, correction simulation and escaped report exports.
 
 ## POC boundaries
 
 - Authentication and roles are represented in the UI but are not backed by an identity provider.
 - Font height is a screening estimate. Prescribed physical measurement remains an officer task.
 - The included rules are a demonstrative subset and require validation by an authorized Legal Metrology expert before operational use.
-- Product matching and e-commerce comparison run against seeded POC sightings; marketplace crawling, government registry synchronization, automated gazette ingestion and cloud collaboration are planned extensions.
-- Browser local storage is used for created inspections; PostgreSQL and object storage are the intended production targets.
+- Product matching compares saved scans on the same device plus labelled seeded sightings. Marketplace crawling, government registry synchronization and cloud collaboration remain planned.
+- IndexedDB stores original evidence and records. A compact localStorage fallback preserves searchable metadata. Neither provides multi-user sync or tamper-proof custody.
 
 ## Source references
 

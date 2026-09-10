@@ -7,6 +7,12 @@ vite.config.d.ts
 .env
 .env.*
 coverage/
+public/ocr-runtime/
 .pptx_work/
+.codex-finalizer/
+.codex-ppt-build/
+.vercel/
 *.pptx.inspect.ndjson
 SIH2026_dotcom_NiyamDrishti.pptx
+.vercel
+.env*
